@@ -11,5 +11,5 @@ json_output = json.dumps(j)
 jToDict = json.loads(json_output)
 
 print(jToDict['response']['body']['items'][0]['dataTime'])
-print(jToDict['response']['body']['items'][0]['no2Value'])
-print(jToDict['response']['body']['items'][0]['pm25Value'])
+print("Now no2 value" ,jToDict['response']['body']['items'][0]['no2Value'])
+print("Now pm25 value" ,jToDict['response']['body']['items'][0]['pm25Value'])
