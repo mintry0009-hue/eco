@@ -9,10 +9,11 @@ const elements = {
 };
 
 const chartColors = {
-  baekseok: "#3767d5",
-  susin: "#c47a3a",
-  grid: "#d6ddd3",
-  text: "#202124",
+  baekseok: "#315fcb",
+  susin: "#d17b2f",
+  grid: "#dbe4de",
+  text: "#18201d",
+  muted: "#66736d",
 };
 
 function parseNumber(value) {
@@ -22,15 +23,15 @@ function parseNumber(value) {
 
 function compactTimeLabel(dataTime) {
   if (!dataTime) return "";
-  const match = dataTime.match(/(\d{2})-(\d{2})\s+(\d{2}):/);
-  return match ? `${match[1]}/${match[2]} ${match[3]}시` : dataTime;
+  const match = dataTime.match(/\d{4}-(\d{2})-(\d{2})\s+(\d{2}):/);
+  return match ? `${Number(match[1])}/${Number(match[2])} ${Number(match[3])}시` : dataTime;
 }
 
-function formatKoreanDate(dataTime) {
-  if (!dataTime) return "-년 -월 -일";
-  const match = dataTime.match(/(\d{4})-(\d{2})-(\d{2})/);
+function formatKoreanDateTime(dataTime) {
+  if (!dataTime) return "-년 -월 -일 -시";
+  const match = dataTime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/);
   if (!match) return dataTime;
-  return `${match[1]}년 ${Number(match[2])}월 ${Number(match[3])}일`;
+  return `${match[1]}년 ${Number(match[2])}월 ${Number(match[3])}일 ${Number(match[4])}시`;
 }
 
 function alignSeries(baekseokItems, susinItems, key) {
@@ -55,21 +56,24 @@ function drawLineChart(canvas, points, config) {
   context.setTransform(ratio, 0, 0, ratio, 0, 0);
   context.clearRect(0, 0, cssWidth, cssHeight);
 
-  const pad = { top: 34, right: 18, bottom: 48, left: 42 };
+  const isMobileChart = cssWidth < 520;
+  const pad = isMobileChart
+    ? { top: 38, right: 12, bottom: 42, left: 38 }
+    : { top: 40, right: 24, bottom: 50, left: 48 };
   const width = cssWidth - pad.left - pad.right;
   const height = cssHeight - pad.top - pad.bottom;
   const values = points.flatMap((point) => [point.baekseok, point.susin]).filter((value) => value !== null);
   const maxValue = values.length ? Math.max(...values) : 1;
   const minValue = values.length ? Math.min(...values) : 0;
   const span = Math.max(maxValue - minValue, config.minSpan);
-  const yMin = Math.max(0, minValue - span * 0.2);
-  const yMax = maxValue + span * 0.25;
+  const yMin = Math.max(0, minValue - span * 0.22);
+  const yMax = maxValue + span * 0.26;
   const xStep = points.length > 1 ? width / (points.length - 1) : width;
 
-  context.font = "12px Malgun Gothic, Arial, sans-serif";
+  context.font = `${isMobileChart ? 10 : 12}px Malgun Gothic, Arial, sans-serif`;
   context.lineWidth = 1;
   context.strokeStyle = chartColors.grid;
-  context.fillStyle = chartColors.text;
+  context.fillStyle = chartColors.muted;
 
   for (let i = 0; i <= 4; i += 1) {
     const y = pad.top + (height / 4) * i;
@@ -81,7 +85,7 @@ function drawLineChart(canvas, points, config) {
     context.fillText(config.formatTick(value), 8, y + 4);
   }
 
-  context.strokeStyle = "#8a9188";
+  context.strokeStyle = "#aab6af";
   context.beginPath();
   context.moveTo(pad.left, pad.top);
   context.lineTo(pad.left, pad.top + height);
@@ -125,22 +129,22 @@ function drawLineChart(canvas, points, config) {
   drawSeries("baekseok", chartColors.baekseok);
   drawSeries("susin", chartColors.susin);
 
-  context.font = "bold 12px Malgun Gothic, Arial, sans-serif";
+  context.font = `bold ${isMobileChart ? 11 : 12}px Malgun Gothic, Arial, sans-serif`;
   context.fillStyle = chartColors.baekseok;
-  context.fillRect(pad.left + 10, 11, 10, 10);
-  context.fillText("백석동", pad.left + 26, 20);
+  context.fillRect(pad.left, 14, 10, 10);
+  context.fillText("백석동", pad.left + 16, 23);
   context.fillStyle = chartColors.susin;
-  context.fillRect(pad.left + 92, 11, 10, 10);
-  context.fillText("수신면", pad.left + 108, 20);
+  context.fillRect(pad.left + 78, 14, 10, 10);
+  context.fillText("수신면", pad.left + 94, 23);
 
   context.fillStyle = chartColors.text;
-  context.font = "11px Malgun Gothic, Arial, sans-serif";
+  context.font = `${isMobileChart ? 9 : 11}px Malgun Gothic, Arial, sans-serif`;
   points.forEach((point, index) => {
     const x = pad.left + xStep * index;
     context.save();
-    context.translate(x, pad.top + height + 18);
-    context.rotate(-0.42);
-    context.fillText(point.label, -20, 0);
+    context.translate(x, pad.top + height + (isMobileChart ? 14 : 18));
+    context.rotate(isMobileChart ? -0.55 : -0.35);
+    context.fillText(point.label, isMobileChart ? -24 : -20, 0);
     context.restore();
   });
 }
@@ -155,7 +159,7 @@ async function loadAirData() {
     const data = await response.json();
     const latest = data.baekseok.items.at(-1);
 
-    elements.lastUpdate.textContent = formatKoreanDate(latest?.dataTime);
+    elements.lastUpdate.textContent = formatKoreanDateTime(latest?.dataTime);
     elements.baekseokNo2.textContent = latest?.no2Value && latest.no2Value !== "-" ? latest.no2Value : "-";
     elements.baekseokPm25.textContent = latest?.pm25Value && latest.pm25Value !== "-" ? latest.pm25Value : "-";
 
@@ -177,6 +181,10 @@ async function loadAirData() {
   }
 }
 
+let resizeTimer;
 elements.refreshButton.addEventListener("click", loadAirData);
-window.addEventListener("resize", loadAirData);
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(loadAirData, 160);
+});
 loadAirData();
