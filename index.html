@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>백석동 대기 정보</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="phone-shell" aria-label="백석동 대기 정보 대시보드">
+      <section class="top-grid">
+        <article class="box update-box">
+          <div class="box-title row-title">
+            <span>마지막 업데이트</span>
+            <button class="icon-button" id="refreshButton" type="button" aria-label="데이터 새로고침" title="데이터 새로고침">
+              <span aria-hidden="true">↻</span>
+            </button>
+          </div>
+          <p class="date-value" id="lastUpdate">-년 -월 -일</p>
+        </article>
+
+        <article class="box info-box">
+          <h1 class="box-title">데이터 정보</h1>
+          <p>데이터 출처: 한국환경공단 에어코리아</p>
+          <p>수집방법: 공공데이터 API</p>
+          <p>수집 주기: 1시간</p>
+        </article>
+      </section>
+
+      <section class="box metric-section" aria-label="백석동 현재 농도">
+        <article class="metric-card">
+          <h2>질소 산화물</h2>
+          <div class="metric-value">
+            <strong id="baekseokNo2">-</strong>
+            <span>ppm</span>
+          </div>
+        </article>
+
+        <article class="metric-card">
+          <h2>초미세먼지</h2>
+          <div class="metric-value">
+            <strong id="baekseokPm25">-</strong>
+            <span>㎍/㎥</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="box chart-box">
+        <h2>백석동과 수신면 질소 산화물(NO2) 비교 그래프</h2>
+        <div class="chart-wrap">
+          <canvas id="no2Chart" width="720" height="420"></canvas>
+        </div>
+      </section>
+
+      <section class="box chart-box">
+        <h2>백석동과 수신면 초미세먼지 비교 그래프</h2>
+        <div class="chart-wrap">
+          <canvas id="pm25Chart" width="720" height="420"></canvas>
+        </div>
+      </section>
+
+      <section class="box note-box">
+        <p>
+          질소 산화물이란 열병합 발전 과정에서 질소가 들어있는 연료를 사용할 때와 연소 중 공기 중의
+          산소와 질소가 반응해 만들어 지는 것이다.
+        </p>
+      </section>
+
+      <p class="status-text" id="statusText" role="status">데이터를 불러오는 중...</p>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

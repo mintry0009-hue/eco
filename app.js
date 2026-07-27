@@ -1,0 +1,182 @@
+const elements = {
+  lastUpdate: document.querySelector("#lastUpdate"),
+  baekseokNo2: document.querySelector("#baekseokNo2"),
+  baekseokPm25: document.querySelector("#baekseokPm25"),
+  no2Chart: document.querySelector("#no2Chart"),
+  pm25Chart: document.querySelector("#pm25Chart"),
+  statusText: document.querySelector("#statusText"),
+  refreshButton: document.querySelector("#refreshButton"),
+};
+
+const chartColors = {
+  baekseok: "#3767d5",
+  susin: "#c47a3a",
+  grid: "#d6ddd3",
+  text: "#202124",
+};
+
+function parseNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function compactTimeLabel(dataTime) {
+  if (!dataTime) return "";
+  const match = dataTime.match(/(\d{2})-(\d{2})\s+(\d{2}):/);
+  return match ? `${match[1]}/${match[2]} ${match[3]}시` : dataTime;
+}
+
+function formatKoreanDate(dataTime) {
+  if (!dataTime) return "-년 -월 -일";
+  const match = dataTime.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) return dataTime;
+  return `${match[1]}년 ${Number(match[2])}월 ${Number(match[3])}일`;
+}
+
+function alignSeries(baekseokItems, susinItems, key) {
+  const susinByTime = new Map(susinItems.map((item) => [item.dataTime, parseNumber(item[key])]));
+  return baekseokItems
+    .map((item) => ({
+      label: compactTimeLabel(item.dataTime),
+      baekseok: parseNumber(item[key]),
+      susin: susinByTime.get(item.dataTime) ?? null,
+    }))
+    .filter((point) => point.baekseok !== null || point.susin !== null)
+    .slice(-8);
+}
+
+function drawLineChart(canvas, points, config) {
+  const context = canvas.getContext("2d");
+  const ratio = window.devicePixelRatio || 1;
+  const cssWidth = canvas.clientWidth;
+  const cssHeight = canvas.clientHeight;
+  canvas.width = Math.floor(cssWidth * ratio);
+  canvas.height = Math.floor(cssHeight * ratio);
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  context.clearRect(0, 0, cssWidth, cssHeight);
+
+  const pad = { top: 34, right: 18, bottom: 48, left: 42 };
+  const width = cssWidth - pad.left - pad.right;
+  const height = cssHeight - pad.top - pad.bottom;
+  const values = points.flatMap((point) => [point.baekseok, point.susin]).filter((value) => value !== null);
+  const maxValue = values.length ? Math.max(...values) : 1;
+  const minValue = values.length ? Math.min(...values) : 0;
+  const span = Math.max(maxValue - minValue, config.minSpan);
+  const yMin = Math.max(0, minValue - span * 0.2);
+  const yMax = maxValue + span * 0.25;
+  const xStep = points.length > 1 ? width / (points.length - 1) : width;
+
+  context.font = "12px Malgun Gothic, Arial, sans-serif";
+  context.lineWidth = 1;
+  context.strokeStyle = chartColors.grid;
+  context.fillStyle = chartColors.text;
+
+  for (let i = 0; i <= 4; i += 1) {
+    const y = pad.top + (height / 4) * i;
+    const value = yMax - ((yMax - yMin) / 4) * i;
+    context.beginPath();
+    context.moveTo(pad.left, y);
+    context.lineTo(pad.left + width, y);
+    context.stroke();
+    context.fillText(config.formatTick(value), 8, y + 4);
+  }
+
+  context.strokeStyle = "#8a9188";
+  context.beginPath();
+  context.moveTo(pad.left, pad.top);
+  context.lineTo(pad.left, pad.top + height);
+  context.lineTo(pad.left + width, pad.top + height);
+  context.stroke();
+
+  function toPoint(point, index, seriesKey) {
+    const raw = point[seriesKey];
+    if (raw === null) return null;
+    return {
+      x: pad.left + xStep * index,
+      y: pad.top + height - ((raw - yMin) / (yMax - yMin || 1)) * height,
+    };
+  }
+
+  function drawSeries(seriesKey, color) {
+    const coords = points.map((point, index) => toPoint(point, index, seriesKey));
+    let started = false;
+    context.strokeStyle = color;
+    context.lineWidth = 3;
+    context.beginPath();
+    coords.forEach((coord) => {
+      if (!coord) return;
+      if (!started) {
+        context.moveTo(coord.x, coord.y);
+        started = true;
+      } else {
+        context.lineTo(coord.x, coord.y);
+      }
+    });
+    context.stroke();
+    context.fillStyle = color;
+    coords.forEach((coord) => {
+      if (!coord) return;
+      context.beginPath();
+      context.arc(coord.x, coord.y, 4, 0, Math.PI * 2);
+      context.fill();
+    });
+  }
+
+  drawSeries("baekseok", chartColors.baekseok);
+  drawSeries("susin", chartColors.susin);
+
+  context.font = "bold 12px Malgun Gothic, Arial, sans-serif";
+  context.fillStyle = chartColors.baekseok;
+  context.fillRect(pad.left + 10, 11, 10, 10);
+  context.fillText("백석동", pad.left + 26, 20);
+  context.fillStyle = chartColors.susin;
+  context.fillRect(pad.left + 92, 11, 10, 10);
+  context.fillText("수신면", pad.left + 108, 20);
+
+  context.fillStyle = chartColors.text;
+  context.font = "11px Malgun Gothic, Arial, sans-serif";
+  points.forEach((point, index) => {
+    const x = pad.left + xStep * index;
+    context.save();
+    context.translate(x, pad.top + height + 18);
+    context.rotate(-0.42);
+    context.fillText(point.label, -20, 0);
+    context.restore();
+  });
+}
+
+async function loadAirData() {
+  elements.refreshButton.classList.add("is-loading");
+  elements.statusText.textContent = "데이터를 불러오는 중...";
+
+  try {
+    const response = await fetch("/api/air", { cache: "no-store" });
+    if (!response.ok) throw new Error("API 응답을 불러오지 못했습니다.");
+    const data = await response.json();
+    const latest = data.baekseok.items.at(-1);
+
+    elements.lastUpdate.textContent = formatKoreanDate(latest?.dataTime);
+    elements.baekseokNo2.textContent = latest?.no2Value && latest.no2Value !== "-" ? latest.no2Value : "-";
+    elements.baekseokPm25.textContent = latest?.pm25Value && latest.pm25Value !== "-" ? latest.pm25Value : "-";
+
+    drawLineChart(elements.no2Chart, alignSeries(data.baekseok.items, data.susin.items, "no2Value"), {
+      minSpan: 0.01,
+      formatTick: (value) => value.toFixed(3),
+    });
+    drawLineChart(elements.pm25Chart, alignSeries(data.baekseok.items, data.susin.items, "pm25Value"), {
+      minSpan: 10,
+      formatTick: (value) => Math.round(value).toString(),
+    });
+
+    elements.statusText.textContent = "API는 1시간 간격으로 업데이트 됩니다.";
+  } catch (error) {
+    elements.statusText.textContent = "데이터를 불러오지 못했습니다. API 키와 Vercel 환경변수를 확인해 주세요.";
+    console.error(error);
+  } finally {
+    elements.refreshButton.classList.remove("is-loading");
+  }
+}
+
+elements.refreshButton.addEventListener("click", loadAirData);
+window.addEventListener("resize", loadAirData);
+loadAirData();

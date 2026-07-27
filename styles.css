@@ -1,0 +1,256 @@
+:root {
+  --ink: #202124;
+  --muted: #687076;
+  --paper: #fbfcf9;
+  --panel: #f7fbf4;
+  --panel-strong: #edf5ed;
+  --line: #202124;
+  --blue: #3767d5;
+  --clay: #c47a3a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #e7ece5;
+  color: var(--ink);
+  font-family: "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 28px 14px;
+}
+
+.phone-shell {
+  width: min(100%, 430px);
+  min-height: 820px;
+  background: var(--paper);
+  border: 10px solid #1f2426;
+  border-radius: 46px;
+  padding: 72px 24px 30px;
+  position: relative;
+  box-shadow: 0 26px 70px rgba(28, 34, 32, 0.22);
+}
+
+.phone-shell::before {
+  content: "";
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  width: 98px;
+  height: 28px;
+  border-radius: 18px;
+  background: #1f2426;
+  transform: translateX(-50%);
+}
+
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.box {
+  border: 3px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.update-box,
+.info-box {
+  min-height: 114px;
+  padding: 16px 14px;
+}
+
+.box-title {
+  margin: 0 0 12px;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.row-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.icon-button {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.icon-button.is-loading span {
+  animation: spin 0.9s linear infinite;
+}
+
+.date-value {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.info-box p {
+  margin: 5px 0;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.metric-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 28px 18px;
+  margin-bottom: 22px;
+}
+
+.metric-card {
+  min-height: 250px;
+  border-radius: 30px;
+  background: var(--panel-strong);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 14px 38px;
+}
+
+.metric-card h2 {
+  margin: 0;
+  font-size: clamp(22px, 7vw, 31px);
+  line-height: 1.15;
+  text-align: center;
+  font-weight: 900;
+}
+
+.metric-value {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.metric-value strong {
+  font-size: clamp(42px, 14vw, 70px);
+  line-height: 0.9;
+  font-weight: 900;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-value span {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.chart-box {
+  padding: 18px 18px 14px;
+  margin-bottom: 22px;
+}
+
+.chart-box h2 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.chart-wrap {
+  width: 100%;
+  aspect-ratio: 1.55;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.note-box {
+  min-height: 118px;
+  display: grid;
+  place-items: center;
+  padding: 22px 24px;
+}
+
+.note-box p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: center;
+  font-weight: 800;
+}
+
+.status-text {
+  min-height: 20px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 390px) {
+  body {
+    padding: 0;
+    background: var(--paper);
+  }
+
+  .phone-shell {
+    width: 100%;
+    min-height: 100vh;
+    border: 0;
+    border-radius: 0;
+    padding: 68px 14px 24px;
+    box-shadow: none;
+  }
+
+  .top-grid {
+    gap: 10px;
+  }
+
+  .update-box,
+  .info-box {
+    padding: 13px 10px;
+  }
+
+  .box-title {
+    font-size: 17px;
+  }
+
+  .date-value {
+    font-size: 15px;
+  }
+
+  .info-box p {
+    font-size: 12px;
+  }
+
+  .metric-section {
+    padding: 18px 10px;
+    gap: 10px;
+  }
+}
