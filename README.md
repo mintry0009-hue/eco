@@ -9,6 +9,18 @@
 - `app.js`: 화면 데이터 표시와 그래프 렌더링
 - `api/air.js`: Vercel 서버리스 API 함수
 
+## 로컬 실행
+
+`npm`이 없어도 Node.js만 있으면 실행할 수 있습니다.
+
+```powershell
+node dev-server.js
+```
+
+Windows에서는 `start.bat`을 실행해도 됩니다.
+
+실행 후 브라우저에서 `http://localhost:3000`으로 접속하세요.
+
 ## Vercel 배포
 
 Vercel에서 이 폴더를 프로젝트로 연결하면 됩니다. API 키를 숨기려면 Vercel 환경변수에 `AIRKOREA_SERVICE_KEY`를 추가하세요.
