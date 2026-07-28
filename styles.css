@@ -111,7 +111,8 @@ body {
 
 .summary-grid,
 .metric-grid,
-.charts-grid {
+.charts-grid,
+.criteria-panel {
   display: grid;
   gap: 18px;
   margin-top: 18px;
@@ -183,6 +184,17 @@ body {
   font-weight: 800;
 }
 
+.info-note {
+  margin: 18px 0 0;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: #34413b;
+  font-size: 14px;
+  line-height: 1.65;
+  font-weight: 800;
+}
+
 .metric-card {
   min-height: 390px;
   padding: 0;
@@ -251,20 +263,27 @@ body {
   position: absolute;
   right: 22px;
   bottom: 18px;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
+  display: grid;
+  justify-items: end;
   gap: 6px;
   color: var(--muted);
   font-weight: 900;
-  padding: 8px 10px;
+  padding: 9px 11px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.78);
   box-shadow: 0 8px 20px rgba(24, 32, 29, 0.08);
 }
 
-.metric-reading > span:first-child {
-  width: 1px;
+.metric-grade {
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1;
+}
+
+.metric-number {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
 }
 
 .metric-reading strong {
@@ -280,6 +299,55 @@ body {
   color: var(--muted);
   font-size: 14px;
   font-weight: 900;
+}
+
+.criteria-panel {
+  display: block;
+  padding: 24px;
+}
+
+.criteria-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.criteria-grid article {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.criteria-grid h3 {
+  margin: 0;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.criteria-grid table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.criteria-grid th,
+.criteria-grid td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.criteria-grid tr:last-child td {
+  border-bottom: 0;
+}
+
+.criteria-grid th {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.62);
 }
 
 .section-heading {
@@ -359,6 +427,10 @@ canvas {
     grid-template-columns: 1fr;
   }
 
+  .criteria-grid {
+    grid-template-columns: 1fr;
+  }
+
   .section-heading {
     display: block;
   }
@@ -416,7 +488,8 @@ canvas {
 
   .summary-grid,
   .metric-grid,
-  .charts-grid {
+  .charts-grid,
+  .criteria-panel {
     gap: 12px;
     margin-top: 12px;
     padding: 0 12px;
@@ -482,12 +555,39 @@ canvas {
     padding: 7px 9px;
   }
 
+  .metric-grade {
+    font-size: 15px;
+  }
+
   .metric-reading strong {
     font-size: 16px;
   }
 
   .metric-reading span:last-child {
     font-size: 12px;
+  }
+
+  .criteria-panel {
+    display: block;
+    padding: 16px 12px;
+  }
+
+  .criteria-grid {
+    gap: 12px;
+  }
+
+  .criteria-grid h3 {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+
+  .criteria-grid table {
+    font-size: 13px;
+  }
+
+  .criteria-grid th,
+  .criteria-grid td {
+    padding: 10px 14px;
   }
 
   .chart-panel {
@@ -508,17 +608,6 @@ canvas {
   .chart-wrap {
     min-height: 230px;
     aspect-ratio: 1.18;
-  }
-
-  .note-panel {
-    margin: 12px 12px 0;
-    padding: 20px 18px;
-  }
-
-  .note-panel p {
-    font-size: 14px;
-    line-height: 1.65;
-    text-align: left;
   }
 
   .status-text {

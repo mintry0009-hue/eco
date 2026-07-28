@@ -43,6 +43,10 @@
               <dd>백석동, 수신면</dd>
             </div>
           </dl>
+          <p class="info-note">
+            질소 산화물이란 열병합 발전 과정에서 질소가 들어있는 연료를 사용할 때와 연소 중 공기 중의
+            산소와 질소가 반응해 만들어 지는 것이다.
+          </p>
         </article>
       </section>
 
@@ -55,9 +59,8 @@
           <div class="metric-status">
             <img id="baekseokNo2Image" src="./image/good.png" alt="질소 산화물 상태 확인 중" />
             <p class="metric-reading">
-              <span id="baekseokNo2Grade" class="sr-only">확인 중</span>
-              <strong id="baekseokNo2">-</strong>
-              <span>ppm</span>
+              <span id="baekseokNo2Grade" class="metric-grade">확인 중</span>
+              <span class="metric-number"><strong id="baekseokNo2">-</strong><span>ppm</span></span>
             </p>
           </div>
         </article>
@@ -70,12 +73,79 @@
           <div class="metric-status">
             <img id="baekseokPm25Image" src="./image/good.png" alt="초미세먼지 상태 확인 중" />
             <p class="metric-reading">
-              <span id="baekseokPm25Grade" class="sr-only">확인 중</span>
-              <strong id="baekseokPm25">-</strong>
-              <span>㎍/㎥</span>
+              <span id="baekseokPm25Grade" class="metric-grade">확인 중</span>
+              <span class="metric-number"><strong id="baekseokPm25">-</strong><span>㎍/㎥</span></span>
             </p>
           </div>
         </article>
+      </section>
+
+      <section class="panel criteria-panel" aria-label="대기질 기준표">
+        <div class="section-heading">
+          <p class="panel-label">Air Quality Standard</p>
+          <h2>대기질 기준표</h2>
+        </div>
+        <div class="criteria-grid">
+          <article>
+            <h3>초미세먼지(PM2.5)</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>상태</th>
+                  <th>기준</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>좋음</td>
+                  <td>0-15 ㎍/㎥</td>
+                </tr>
+                <tr>
+                  <td>보통</td>
+                  <td>16-35 ㎍/㎥</td>
+                </tr>
+                <tr>
+                  <td>나쁨</td>
+                  <td>36-75 ㎍/㎥</td>
+                </tr>
+                <tr>
+                  <td>매우나쁨</td>
+                  <td>76 이상 ㎍/㎥</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article>
+            <h3>질소 산화물(NO2)</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>상태</th>
+                  <th>기준</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>좋음</td>
+                  <td>0-0.03 ppm</td>
+                </tr>
+                <tr>
+                  <td>보통</td>
+                  <td>0.0301-0.06 ppm</td>
+                </tr>
+                <tr>
+                  <td>나쁨</td>
+                  <td>0.0601-0.2 ppm</td>
+                </tr>
+                <tr>
+                  <td>매우나쁨</td>
+                  <td>0.2001 이상 ppm</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
       </section>
 
       <section class="charts-grid">
@@ -98,13 +168,6 @@
             <canvas id="pm25Chart" width="720" height="420"></canvas>
           </div>
         </article>
-      </section>
-
-      <section class="note-panel">
-        <p>
-          질소 산화물이란 열병합 발전 과정에서 질소가 들어있는 연료를 사용할 때와 연소 중 공기 중의
-          산소와 질소가 반응해 만들어 지는 것이다.
-        </p>
       </section>
 
       <p class="status-text" id="statusText" role="status">데이터를 불러오는 중...</p>
