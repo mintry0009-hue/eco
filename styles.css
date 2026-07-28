@@ -177,8 +177,9 @@ body {
   min-height: 230px;
   padding: 28px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: space-between;
+  gap: 24px;
   overflow: hidden;
   position: relative;
 }
@@ -213,26 +214,53 @@ body {
   line-height: 1.2;
 }
 
-.metric-value {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  white-space: nowrap;
+.metric-status {
+  min-width: 190px;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
   position: relative;
   z-index: 1;
 }
 
-.metric-value strong {
-  font-size: clamp(52px, 9vw, 86px);
-  line-height: 0.9;
+.metric-status img {
+  width: min(190px, 22vw);
+  max-width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 16px 24px rgba(24, 32, 29, 0.16));
+}
+
+.metric-reading {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.metric-reading > span:first-child {
+  width: 100%;
+  color: var(--ink);
+  font-size: 18px;
+  text-align: center;
+}
+
+.metric-reading strong {
+  font-size: 22px;
+  line-height: 1;
   font-weight: 900;
   letter-spacing: 0;
   font-variant-numeric: tabular-nums;
 }
 
-.metric-value span {
+.metric-reading span:last-child {
   color: var(--muted);
-  font-size: 24px;
+  font-size: 14px;
   font-weight: 900;
 }
 
@@ -413,10 +441,10 @@ canvas {
   }
 
   .metric-card {
-    min-height: 156px;
+    min-height: 176px;
     padding: 20px;
     flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     gap: 16px;
   }
 
@@ -432,17 +460,30 @@ canvas {
     word-break: keep-all;
   }
 
-  .metric-value {
+  .metric-status {
     margin-left: auto;
-    gap: 7px;
+    min-width: 124px;
+    gap: 6px;
   }
 
-  .metric-value strong {
-    font-size: 54px;
+  .metric-status img {
+    width: 112px;
   }
 
-  .metric-value span {
+  .metric-reading {
+    gap: 6px;
+  }
+
+  .metric-reading > span:first-child {
+    font-size: 14px;
+  }
+
+  .metric-reading strong {
     font-size: 17px;
+  }
+
+  .metric-reading span:last-child {
+    font-size: 12px;
   }
 
   .chart-panel {
@@ -484,17 +525,22 @@ canvas {
 
 @media (max-width: 380px) {
   .metric-card {
-    min-height: 176px;
+    min-height: 250px;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .metric-value {
+  .metric-status {
     margin-left: 0;
+    width: 100%;
   }
 
-  .metric-value strong {
-    font-size: 50px;
+  .metric-status img {
+    width: 136px;
+  }
+
+  .metric-reading strong {
+    font-size: 18px;
   }
 
   .chart-wrap {

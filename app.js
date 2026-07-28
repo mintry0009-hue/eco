@@ -1,7 +1,11 @@
 const elements = {
   lastUpdate: document.querySelector("#lastUpdate"),
   baekseokNo2: document.querySelector("#baekseokNo2"),
+  baekseokNo2Grade: document.querySelector("#baekseokNo2Grade"),
+  baekseokNo2Image: document.querySelector("#baekseokNo2Image"),
   baekseokPm25: document.querySelector("#baekseokPm25"),
+  baekseokPm25Grade: document.querySelector("#baekseokPm25Grade"),
+  baekseokPm25Image: document.querySelector("#baekseokPm25Image"),
   no2Chart: document.querySelector("#no2Chart"),
   pm25Chart: document.querySelector("#pm25Chart"),
   statusText: document.querySelector("#statusText"),
@@ -14,6 +18,14 @@ const chartColors = {
   grid: "#dbe4de",
   text: "#18201d",
   muted: "#66736d",
+};
+
+const gradeImages = {
+  good: "./image/verygood.png",
+  normal: "./image/good.png",
+  bad: "./image/bad.png",
+  veryBad: "./image/verybad.png",
+  unknown: "./image/good.png",
 };
 
 function parseNumber(value) {
@@ -32,6 +44,31 @@ function formatKoreanDateTime(dataTime) {
   const match = dataTime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})/);
   if (!match) return dataTime;
   return `${match[1]}년 ${Number(match[2])}월 ${Number(match[3])}일 ${Number(match[4])}시`;
+}
+
+function getPm25Grade(value) {
+  if (value === null) return { key: "unknown", label: "확인 불가" };
+  if (value <= 15) return { key: "good", label: "좋음" };
+  if (value <= 35) return { key: "normal", label: "보통" };
+  if (value <= 75) return { key: "bad", label: "나쁨" };
+  return { key: "veryBad", label: "매우나쁨" };
+}
+
+function getNo2Grade(value) {
+  if (value === null) return { key: "unknown", label: "확인 불가" };
+  if (value <= 0.03) return { key: "good", label: "좋음" };
+  if (value <= 0.06) return { key: "normal", label: "보통" };
+  if (value <= 0.2) return { key: "bad", label: "나쁨" };
+  return { key: "veryBad", label: "매우나쁨" };
+}
+
+function updateMetricStatus({ value, unit, pollutantName, valueElement, gradeElement, imageElement, grade }) {
+  valueElement.textContent = value === null ? "-" : value;
+  gradeElement.textContent = grade.label;
+  imageElement.src = gradeImages[grade.key];
+  imageElement.alt = `${pollutantName} ${grade.label}`;
+  imageElement.parentElement.dataset.grade = grade.key;
+  valueElement.nextElementSibling.textContent = unit;
 }
 
 function alignSeries(baekseokItems, susinItems, key) {
@@ -158,10 +195,28 @@ async function loadAirData() {
     if (!response.ok) throw new Error("API 응답을 불러오지 못했습니다.");
     const data = await response.json();
     const latest = data.baekseok.items.at(-1);
+    const no2Value = parseNumber(latest?.no2Value);
+    const pm25Value = parseNumber(latest?.pm25Value);
 
     elements.lastUpdate.textContent = formatKoreanDateTime(latest?.dataTime);
-    elements.baekseokNo2.textContent = latest?.no2Value && latest.no2Value !== "-" ? latest.no2Value : "-";
-    elements.baekseokPm25.textContent = latest?.pm25Value && latest.pm25Value !== "-" ? latest.pm25Value : "-";
+    updateMetricStatus({
+      value: no2Value === null ? null : latest.no2Value,
+      unit: "ppm",
+      pollutantName: "질소 산화물",
+      valueElement: elements.baekseokNo2,
+      gradeElement: elements.baekseokNo2Grade,
+      imageElement: elements.baekseokNo2Image,
+      grade: getNo2Grade(no2Value),
+    });
+    updateMetricStatus({
+      value: pm25Value === null ? null : latest.pm25Value,
+      unit: "㎍/㎥",
+      pollutantName: "초미세먼지",
+      valueElement: elements.baekseokPm25,
+      gradeElement: elements.baekseokPm25Grade,
+      imageElement: elements.baekseokPm25Image,
+      grade: getPm25Grade(pm25Value),
+    });
 
     drawLineChart(elements.no2Chart, alignSeries(data.baekseok.items, data.susin.items, "no2Value"), {
       minSpan: 0.01,
