@@ -184,7 +184,7 @@ body {
 }
 
 .metric-card {
-  min-height: 330px;
+  min-height: 390px;
   padding: 0;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -197,8 +197,8 @@ body {
 }
 
 .metric-header {
-  min-height: 92px;
-  padding: 20px 24px 18px;
+  min-height: 78px;
+  padding: 15px 24px 12px;
   display: grid;
   place-items: center;
   text-align: center;
@@ -228,17 +228,17 @@ body {
 }
 
 .metric-status {
-  min-height: 238px;
+  min-height: 312px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 26px 24px 54px;
+  padding: 8px 16px 48px;
   position: relative;
   z-index: 1;
 }
 
 .metric-status img {
-  width: min(230px, 32vw);
+  width: min(340px, 44vw);
   max-width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
@@ -459,7 +459,7 @@ canvas {
   }
 
   .metric-card {
-    min-height: 300px;
+    min-height: 350px;
   }
 
   .metric-card h2 {
@@ -468,12 +468,12 @@ canvas {
   }
 
   .metric-status {
-    min-height: 202px;
-    padding: 18px 16px 50px;
+    min-height: 272px;
+    padding: 6px 12px 46px;
   }
 
   .metric-status img {
-    width: 300px;
+    width: min(300px, 82vw);
   }
 
   .metric-reading {
@@ -529,15 +529,15 @@ canvas {
 
 @media (max-width: 380px) {
   .metric-card {
-    min-height: 286px;
+    min-height: 324px;
   }
 
   .metric-status {
-    min-height: 192px;
+    min-height: 246px;
   }
 
   .metric-status img {
-    width: 142px;
+    width: min(270px, 82vw);
   }
 
   .metric-reading strong {
