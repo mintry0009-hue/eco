@@ -15,6 +15,16 @@
   box-sizing: border-box;
 }
 
+.sr-only {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -174,38 +184,41 @@ body {
 }
 
 .metric-card {
-  min-height: 230px;
-  padding: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  min-height: 330px;
+  padding: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   overflow: hidden;
   position: relative;
 }
 
 .metric-card::after {
-  content: "";
+  content: none;
+}
+
+.metric-header {
+  min-height: 92px;
+  padding: 20px 24px 18px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+  background: rgba(246, 250, 247, 0.9);
+}
+
+.metric-header::after {
+  content: attr(data-grade);
   position: absolute;
-  right: -34px;
-  bottom: -48px;
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  opacity: 0.18;
-}
-
-.no2-card::after {
-  background: var(--blue);
-}
-
-.pm-card::after {
-  background: var(--orange);
+  right: 18px;
+  top: 18px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .metric-kicker {
   color: var(--muted);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .metric-card h2 {
@@ -215,16 +228,17 @@ body {
 }
 
 .metric-status {
-  min-width: 190px;
-  display: grid;
-  justify-items: center;
-  gap: 8px;
+  min-height: 238px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px 24px 54px;
   position: relative;
   z-index: 1;
 }
 
 .metric-status img {
-  width: min(190px, 22vw);
+  width: min(230px, 32vw);
   max-width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
@@ -234,24 +248,28 @@ body {
 
 .metric-reading {
   margin: 0;
+  position: absolute;
+  right: 22px;
+  bottom: 18px;
   display: flex;
   align-items: baseline;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 6px;
   color: var(--muted);
   font-weight: 900;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 8px 20px rgba(24, 32, 29, 0.08);
 }
 
 .metric-reading > span:first-child {
-  width: 100%;
-  color: var(--ink);
-  font-size: 18px;
-  text-align: center;
+  width: 1px;
 }
 
 .metric-reading strong {
-  font-size: 22px;
+  color: var(--ink);
+  font-size: 18px;
   line-height: 1;
   font-weight: 900;
   letter-spacing: 0;
@@ -441,18 +459,7 @@ canvas {
   }
 
   .metric-card {
-    min-height: 176px;
-    padding: 20px;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .metric-card::after {
-    right: -52px;
-    bottom: -64px;
-    width: 150px;
-    height: 150px;
+    min-height: 300px;
   }
 
   .metric-card h2 {
@@ -461,25 +468,22 @@ canvas {
   }
 
   .metric-status {
-    margin-left: auto;
-    min-width: 124px;
-    gap: 6px;
+    min-height: 202px;
+    padding: 18px 16px 50px;
   }
 
   .metric-status img {
-    width: 112px;
+    width: 150px;
   }
 
   .metric-reading {
-    gap: 6px;
-  }
-
-  .metric-reading > span:first-child {
-    font-size: 14px;
+    right: 16px;
+    bottom: 14px;
+    padding: 7px 9px;
   }
 
   .metric-reading strong {
-    font-size: 17px;
+    font-size: 16px;
   }
 
   .metric-reading span:last-child {
@@ -525,18 +529,15 @@ canvas {
 
 @media (max-width: 380px) {
   .metric-card {
-    min-height: 250px;
-    flex-direction: column;
-    align-items: flex-start;
+    min-height: 286px;
   }
 
   .metric-status {
-    margin-left: 0;
-    width: 100%;
+    min-height: 192px;
   }
 
   .metric-status img {
-    width: 136px;
+    width: 142px;
   }
 
   .metric-reading strong {
